@@ -21,12 +21,25 @@ class AlienInvasion:
         # Add the ship
         self.ship = Ship(self)
 
-    @staticmethod
-    def _check_events():
+    def _check_events(self):
         # Respond to keyboard presses and mouse events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT:
+                    # Move the ship to the right
+                    self.ship.moving_right = True
+                elif event.key == pygame.K_LEFT:
+                    # Move the ship to the left
+                    self.ship.moving_left = True
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_RIGHT:
+                    # Stop moving the ship to the right
+                    self.ship.moving_right = False
+                elif event.key == pygame.K_LEFT:
+                    # Stop moving the ship to the left
+                    self.ship.moving_left = False
 
     def _update_screen(self):
         # Update images on the screen and flip to the new screen
@@ -38,6 +51,7 @@ class AlienInvasion:
         """Start the main loop for the game"""
         while True:
             self._check_events()
+            self.ship.update()
             self._update_screen()
 
 
