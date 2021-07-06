@@ -70,12 +70,24 @@ class AlienInvasion:
         self.ship.rect.bottom = self.screen.get_rect().bottom
         self._update_screen()
 
+    def _update_bullets(self):
+        """Update position of bullets, get rid of old bullets"""
+        # Update bullet positions
+        self.bullets.update()
+        # Get rid of bullets that have disappeared
+        for bullet in self.bullets.copy():
+            if bullet.rect.bottom <= 0:
+                self.bullets.remove(bullet)
+
+    def _draw_bullets_to_screen(self):
+        for bullet in self.bullets.sprites():
+            bullet.draw_bullet()
+
     def _update_screen(self):
         # Update images on the screen and flip to the new screen
         self.screen.fill(self.settings.bg_color)
         self.ship.blit_me()
-        for bullet in self.bullets.sprites():
-            bullet.draw_bullet()
+        self._draw_bullets_to_screen()
         pygame.display.flip()
 
     def run_game(self):
@@ -83,11 +95,7 @@ class AlienInvasion:
         while True:
             self._check_events()
             self.ship.update()
-            self.bullets.update()
-            # Get rid of bullets that have disappeared
-            for bullet in self.bullets.copy():
-                if bullet.rect.bottom <= 0:
-                    self.bullets.remove(bullet)
+            self._update_bullets()
             self._update_screen()
 
     def _fire_bullet(self):
