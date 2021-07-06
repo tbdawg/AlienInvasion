@@ -3,6 +3,7 @@ import pygame
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
+from alien import Alien
 
 
 class AlienInvasion:
@@ -20,7 +21,11 @@ class AlienInvasion:
 
         # Add the ship
         self.ship = Ship(self)
+        # Add bullets
         self.bullets = pygame.sprite.Group()
+        # Add aliens
+        self.aliens = pygame.sprite.Group()
+        self._create_fleet()
 
     def _check_events(self):
         # Respond to keyboard presses and mouse events
@@ -88,6 +93,7 @@ class AlienInvasion:
         self.screen.fill(self.settings.bg_color)
         self.ship.blit_me()
         self._draw_bullets_to_screen()
+        self.aliens.draw(self.screen)
         pygame.display.flip()
 
     def run_game(self):
@@ -103,6 +109,23 @@ class AlienInvasion:
         if len(self.bullets) < self.settings.bullets_allowed:
             new_bullet = Bullet(self)
             self.bullets.add(new_bullet)
+
+    def _create_fleet(self):
+        """Create the fleet of aliens"""
+        # Create an alien and find the number of aliens in a row
+        # Spacing between each alien is one alien width
+        alien = Alien(self)
+        alien_width = alien.rect.width
+        available_space_x = self.settings.screen_width - (2 * alien_width)
+        number_of_aliens = available_space_x // (2 * alien_width)
+
+        # Create the first row of aliens
+        for alien_number in range(number_of_aliens):
+            # Create an alien and place it in the row
+            alien = Alien(self)
+            alien.x = alien_width + 2 * alien_width * alien_number
+            alien.rect.x = alien.x
+            self.aliens.add(alien)
 
 
 if __name__ == '__main__':
